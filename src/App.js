@@ -1,24 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ImageGenerate from './Components/ImageGenerate/ImageGenerate';
+import Nav from './Components/MyGPTNav/Nav';
+import TextGenerate from './Components/TextGenerate/TextGenerate';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Nav />
+      <Routes>
+        <Route path='/' element={<TextGenerate />} />
+        <Route path='/imageGenerate' element={<ImageGenerate />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
