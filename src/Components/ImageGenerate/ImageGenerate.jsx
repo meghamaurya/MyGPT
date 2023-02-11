@@ -1,5 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import { useState } from "react";
+import Nav from "../Nav/Nav";
+import "./ImageGenerate.scss";
 
 const ImageGenerate = () => {
   const configuration = new Configuration({
@@ -35,24 +37,26 @@ const ImageGenerate = () => {
   };
 
   return (
-    <main>
+    <main className="imgGenerator">
+      <Nav />
       {imageUrl &&
         imageUrl.map(({ id, image, result }) => {
           return (
-            <div key={id}>
-              <p>{image}</p>
-              <img src={result} alt="" width="200px" />
+            <div key={id} className="imgCard">
+              <p className="imgTitle">{image}</p>
+              <img src={result} alt="" width="200px" className="img" />
             </div>
           );
         })}
-      <div>
+      <div className="imgContainer">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="what type of image you want..."
+          className="input"
         />
-        <button onClick={handleClick}>
+        <button onClick={handleClick} className="btn">
           {loading ? "generating..." : "image generate"}
         </button>
       </div>
