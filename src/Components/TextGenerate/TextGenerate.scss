@@ -1,0 +1,23 @@
+@use '../../App';
+@use '../Styles.scss';
+
+.textGenerator{
+    @include Styles.generator;
+   
+    .textContainer{
+        @include Styles.generator-container;
+
+        .typeWriter{
+            font-size: large;
+            margin: 1rem ;
+        }
+        
+        .input{
+         @include Styles.input;
+        }
+
+        .btn{
+           @include Styles.btn;
+        }
+    }
+}

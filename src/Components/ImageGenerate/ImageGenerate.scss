@@ -1,0 +1,19 @@
+@use '../../App';
+@use '../Styles.scss';
+
+.imgGenerator{
+    @include Styles.generator;
+    
+   
+    .imgContainer{
+        @include Styles.generator-container;
+        
+        .input{
+           @include Styles.input;
+        }
+
+        .btn{
+           @include Styles.btn;
+        }
+    }
+}
