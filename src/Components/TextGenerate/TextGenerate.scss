@@ -1,5 +1,6 @@
 @use '../../App';
 @use '../Styles.scss';
+@use 'three-dots';
 
 .textGenerator{
     @include Styles.generator;
@@ -18,6 +19,10 @@
 
         .btn{
            @include Styles.btn;
+           
+        }
+        .btnEffect{
+            @include Styles.btnEffect;
         }
     }
 }
