@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Configuration, OpenAIApi } from "openai";
 import Typewriter from "typewriter-effect";
 import "./TextGenerate.scss";
@@ -17,6 +17,8 @@ const TextGenerate = () => {
   ]);
   //   const [error, setError] = useState("");
   const [stopType, setStopType] = useState(false);
+  const [dots, setDots] = useState("");
+  const typewriterRef = useRef();
 
   const handleClick = async () => {
     setLoading(true);
@@ -38,6 +40,8 @@ const TextGenerate = () => {
           result: response.data.choices[0].text,
         },
       ]);
+      setPrompt("");
+      setStopType(false);
     } catch (err) {
       console.log(err);
       // setError(response.data)
@@ -66,6 +70,8 @@ const TextGenerate = () => {
             result: response.data.choices[0].text,
           },
         ]);
+        setPrompt("");
+        setStopType(false);
       } catch (err) {
         console.log(err);
         // setError(response.data)
@@ -73,6 +79,23 @@ const TextGenerate = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let count = 1;
+    const intervalId = setInterval(() => {
+      setDots((dots) => {
+        count++;
+        let newDots = "";
+        for (let i = 0; i < count % 4; i++) {
+          newDots += ".";
+        }
+        return newDots;
+      });
+    }, 500);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [dots]);
 
   return (
     <main className="textGenerator">
@@ -85,16 +108,20 @@ const TextGenerate = () => {
                 <div className="searchMsg">{message}</div>
                 <Typewriter
                   className="typewriter"
+                  ref={typewriterRef}
                   onInit={(typewriter) => {
-                    stopType
-                      ? typewriter.typeString(result).stop()
-                      : typewriter.typeString(result).start();
+                    if (!stopType) {
+                      typewriterRef.current = typewriter;
+                      typewriter.typeString(result).start();
+                    }
                   }}
                 />
                 <button
                   onClick={() => {
-                    setStopType(true);
-                    console.log("stop");
+                    if (typewriterRef.current) {
+                      typewriterRef.current.stop();
+                      setStopType(true);
+                    }
                   }}
                 >
                   stop
@@ -115,16 +142,16 @@ const TextGenerate = () => {
             setStopType(false);
           }}
           onKeyDown={handleKeyEvent}
-          placeholder="type here..."
+          placeholder={`type here${dots}`}
           className="input"
         />
 
         <button
           onClick={handleClick}
           disabled={loading || prompt.length === 0}
-          className="btn"
+          className={loading ? "btnEffect" : "btn"}
         >
-          {loading ? "Generating..." : "Generate"}
+          {loading ? "Generating" : "Generate"}
         </button>
       </div>
     </main>
