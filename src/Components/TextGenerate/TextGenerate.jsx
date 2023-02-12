@@ -81,16 +81,8 @@ const TextGenerate = () => {
   };
 
   useEffect(() => {
-    let count = 1;
     const intervalId = setInterval(() => {
-      setDots((dots) => {
-        count++;
-        let newDots = "";
-        for (let i = 0; i < count % 4; i++) {
-          newDots += ".";
-        }
-        return newDots;
-      });
+      setDots(dots.length >= 4 ? "" : `${dots}.`);
     }, 500);
     return () => {
       clearInterval(intervalId);
@@ -107,7 +99,7 @@ const TextGenerate = () => {
               <>
                 <div className="searchMsg">{message}</div>
                 <Typewriter
-                  className="typewriter"
+                  className={stopType ? "hide-cursor" : "typewriter"}
                   ref={typewriterRef}
                   onInit={(typewriter) => {
                     if (!stopType) {
@@ -116,16 +108,29 @@ const TextGenerate = () => {
                     }
                   }}
                 />
-                <button
-                  onClick={() => {
-                    if (typewriterRef.current) {
-                      typewriterRef.current.stop();
-                      setStopType(true);
-                    }
-                  }}
-                >
-                  stop
-                </button>
+                {!stopType ? (
+                  <button
+                    onClick={() => {
+                      if (typewriterRef.current) {
+                        typewriterRef.current.stop();
+                        setStopType(true);
+                      }
+                    }}
+                  >
+                    stop
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (typewriterRef.current) {
+                        typewriterRef.current.start();
+                        setStopType(false);
+                      }
+                    }}
+                  >
+                    regenerate
+                  </button>
+                )}
               </>
             ) : (
               <div className="searchMsg">{message}</div>
@@ -142,7 +147,7 @@ const TextGenerate = () => {
             setStopType(false);
           }}
           onKeyDown={handleKeyEvent}
-          placeholder={`type here${dots}`}
+          placeholder={stopType ? `How can I help you${dots}` : ""}
           className="input"
         />
 
