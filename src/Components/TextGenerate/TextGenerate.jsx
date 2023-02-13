@@ -19,7 +19,9 @@ const TextGenerate = () => {
   const [stopType, setStopType] = useState(false);
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
+  const [inputHeight, setInputHeight] = useState(3.4);
   const typewriterRef = useRef();
+  const inputRef = useRef();
 
   const handleClick = async () => {
     setLoading(true);
@@ -92,6 +94,21 @@ const TextGenerate = () => {
     };
   }, [dots]);
 
+  const handleInputChange = (e) => {
+    let height = e.target.scrollHeight;
+    console.log(height, "height");
+    let height1 = height < 5 ? 3.4 : height;
+    let height2 = height > 10 ? 8 : height1;
+    inputRef.current.style.height = height2 + "rem";
+    // setInputHeight((prevHeight) => {
+    //   if (height1 >= 5 && height2 >= 10) {
+    //     return height2;
+    //   } else {
+    //     return prevHeight;
+    //   }
+    // });
+  };
+
   return (
     <main className="textGenerator">
       <Nav />
@@ -103,7 +120,7 @@ const TextGenerate = () => {
                 <>
                   <div className="searchMsg">{message}</div>
                   <Typewriter
-                    className={stopType ? "hide__cursor" : "typewriter"}
+                    className={"typewriter"}
                     ref={typewriterRef}
                     onInit={(typewriter) => {
                       if (!stopType) {
@@ -111,13 +128,12 @@ const TextGenerate = () => {
                         typewriter.typeString(result).start();
                       }
                     }}
-                  >
-                    <span className="Typewriter__cursor"></span>
-                  </Typewriter>
+                  />
                   {messageResult.length - 1 === i && (
                     <>
                       {!stopType ? (
                         <button
+                          className="controlBtn"
                           onClick={() => {
                             if (typewriterRef.current) {
                               typewriterRef.current.stop();
@@ -130,6 +146,7 @@ const TextGenerate = () => {
                         </button>
                       ) : (
                         <button
+                          className="controlBtn"
                           onClick={() => {
                             if (typewriterRef.current) {
                               typewriterRef.current.start();
@@ -147,22 +164,24 @@ const TextGenerate = () => {
               ) : (
                 <div className="searchMsg">{message}</div>
               )}
-
-              {/* <pre className="result">{result}</pre> */}
             </div>
           ))}
         </div>
-        <input
+        <textarea
           typeof="text"
           value={prompt}
+          ref={inputRef}
           onChange={(e) => {
             setPrompt(e.target.value);
+            // handleInputChange(e);
             if (typewriterRef.current) {
               typewriterRef.current.stop();
             }
             setStopType(false);
           }}
           onKeyDown={handleKeyEvent}
+          style={{ height: `${inputHeight}rem` }}
+          onInput={handleInputChange}
           placeholder={isTyping ? `How can I help you${dots}` : `${dots}`}
           className="input"
         />
