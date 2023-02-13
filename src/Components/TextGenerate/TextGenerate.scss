@@ -8,10 +8,19 @@
     .textContainer{
         @include Styles.generator-container;
 
-        .typeWriter{
+        .messageContent{
+            @include Styles.messageContent;
+        }
+        
+        .typewriter{
             font-size: large;
             margin: 1rem ;
+          
         }
+       
+        .Typewriter span.Typewriter__cursor{
+                display: none ;
+            }
         
         .input{
          @include Styles.input;

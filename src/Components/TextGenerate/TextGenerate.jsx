@@ -18,6 +18,7 @@ const TextGenerate = () => {
   //   const [error, setError] = useState("");
   const [stopType, setStopType] = useState(false);
   const [dots, setDots] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
   const typewriterRef = useRef();
 
   const handleClick = async () => {
@@ -30,7 +31,6 @@ const TextGenerate = () => {
         temperature: 0.5,
         max_tokens: 100,
       });
-      console.log(response.data);
       setPrompt("");
       setMessageResult((prevState) => [
         ...prevState,
@@ -47,6 +47,7 @@ const TextGenerate = () => {
       // setError(response.data)
     }
     setLoading(false);
+    setIsTyping(false);
   };
 
   const handleKeyEvent = async (e) => {
@@ -60,7 +61,7 @@ const TextGenerate = () => {
           temperature: 0.5,
           max_tokens: 100,
         });
-        console.log(response.data);
+
         setPrompt("");
         setMessageResult((prevState) => [
           ...prevState,
@@ -70,6 +71,7 @@ const TextGenerate = () => {
             result: response.data.choices[0].text,
           },
         ]);
+        setIsTyping(false);
         setPrompt("");
         setStopType(false);
       } catch (err) {
@@ -77,6 +79,7 @@ const TextGenerate = () => {
         // setError(response.data)
       }
       setLoading(false);
+      setIsTyping(false);
     }
   };
 
@@ -93,61 +96,74 @@ const TextGenerate = () => {
     <main className="textGenerator">
       <Nav />
       <div className="textContainer">
-        {messageResult.map(({ id, message, result }) => (
-          <div key={id}>
-            {result ? (
-              <>
+        <div className="messageContent">
+          {messageResult.map(({ id, message, result }, i) => (
+            <div key={id}>
+              {result ? (
+                <>
+                  <div className="searchMsg">{message}</div>
+                  <Typewriter
+                    className={stopType ? "hide__cursor" : "typewriter"}
+                    ref={typewriterRef}
+                    onInit={(typewriter) => {
+                      if (!stopType) {
+                        typewriterRef.current = typewriter;
+                        typewriter.typeString(result).start();
+                      }
+                    }}
+                  >
+                    <span className="Typewriter__cursor"></span>
+                  </Typewriter>
+                  {messageResult.length - 1 === i && (
+                    <>
+                      {!stopType ? (
+                        <button
+                          onClick={() => {
+                            if (typewriterRef.current) {
+                              typewriterRef.current.stop();
+                              setStopType(true);
+                              setIsTyping(true);
+                            }
+                          }}
+                        >
+                          stop
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            if (typewriterRef.current) {
+                              typewriterRef.current.start();
+                              setStopType(false);
+                              setIsTyping(false);
+                            }
+                          }}
+                        >
+                          continue
+                        </button>
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
                 <div className="searchMsg">{message}</div>
-                <Typewriter
-                  className={stopType ? "hide-cursor" : "typewriter"}
-                  ref={typewriterRef}
-                  onInit={(typewriter) => {
-                    if (!stopType) {
-                      typewriterRef.current = typewriter;
-                      typewriter.typeString(result).start();
-                    }
-                  }}
-                />
-                {!stopType ? (
-                  <button
-                    onClick={() => {
-                      if (typewriterRef.current) {
-                        typewriterRef.current.stop();
-                        setStopType(true);
-                      }
-                    }}
-                  >
-                    stop
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      if (typewriterRef.current) {
-                        typewriterRef.current.start();
-                        setStopType(false);
-                      }
-                    }}
-                  >
-                    regenerate
-                  </button>
-                )}
-              </>
-            ) : (
-              <div className="searchMsg">{message}</div>
-            )}
+              )}
 
-            {/* <pre className="result">{result}</pre> */}
-          </div>
-        ))}
+              {/* <pre className="result">{result}</pre> */}
+            </div>
+          ))}
+        </div>
         <input
           typeof="text"
           value={prompt}
           onChange={(e) => {
             setPrompt(e.target.value);
+            if (typewriterRef.current) {
+              typewriterRef.current.stop();
+            }
             setStopType(false);
           }}
           onKeyDown={handleKeyEvent}
-          placeholder={stopType ? `How can I help you${dots}` : ""}
+          placeholder={isTyping ? `How can I help you${dots}` : `${dots}`}
           className="input"
         />
 
