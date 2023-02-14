@@ -15,11 +15,11 @@ const TextGenerate = () => {
   const [messageResult, setMessageResult] = useState([
     { id: "", text: "", result: "" },
   ]);
-  //   const [error, setError] = useState("");
+
+  const [error, setError] = useState([]);
   const [stopType, setStopType] = useState(false);
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
-  const [inputHeight, setInputHeight] = useState(3.4);
   const typewriterRef = useRef();
   const inputRef = useRef();
 
@@ -46,7 +46,8 @@ const TextGenerate = () => {
       setStopType(false);
     } catch (err) {
       console.log(err);
-      // setError(response.data)
+      // if(err === )
+      // setError(err);
     }
     setLoading(false);
     setIsTyping(false);
@@ -74,11 +75,17 @@ const TextGenerate = () => {
           },
         ]);
         setIsTyping(false);
+        inputRef.current.style.height = "3.6rem";
         setPrompt("");
         setStopType(false);
       } catch (err) {
-        console.log(err);
-        // setError(response.data)
+        console.log(err.data);
+        if (err.data === "undefined") {
+          setError("too many ");
+          setPrompt("");
+          setStopType(false);
+          setIsTyping(false);
+        }
       }
       setLoading(false);
       setIsTyping(false);
@@ -96,17 +103,12 @@ const TextGenerate = () => {
 
   const handleInputChange = (e) => {
     let height = e.target.scrollHeight;
-    console.log(height, "height");
-    let height1 = height < 5 ? 3.4 : height;
-    let height2 = height > 10 ? 8 : height1;
-    inputRef.current.style.height = height2 + "rem";
-    // setInputHeight((prevHeight) => {
-    //   if (height1 >= 5 && height2 >= 10) {
-    //     return height2;
-    //   } else {
-    //     return prevHeight;
-    //   }
-    // });
+    if (e.target.value === "" && isTyping) {
+      inputRef.current.style.height = "57.6px";
+    } else {
+      height = height <= 57.6 ? 57.6 : height;
+      inputRef.current.style.height = `${height}px`;
+    }
   };
 
   return (
@@ -162,7 +164,13 @@ const TextGenerate = () => {
                   )}
                 </>
               ) : (
-                <div className="searchMsg">{message}</div>
+                <>
+                  {error ? (
+                    <div style={{ color: "red" }}>error</div>
+                  ) : (
+                    <div className="searchMsg">{message}</div>
+                  )}
+                </>
               )}
             </div>
           ))}
@@ -173,15 +181,13 @@ const TextGenerate = () => {
           ref={inputRef}
           onChange={(e) => {
             setPrompt(e.target.value);
-            // handleInputChange(e);
+            handleInputChange(e);
             if (typewriterRef.current) {
               typewriterRef.current.stop();
             }
             setStopType(false);
           }}
           onKeyDown={handleKeyEvent}
-          style={{ height: `${inputHeight}rem` }}
-          onInput={handleInputChange}
           placeholder={isTyping ? `How can I help you${dots}` : `${dots}`}
           className="input"
         />
