@@ -16,7 +16,8 @@ const TextGenerate = () => {
     { id: "", text: "", result: "" },
   ]);
 
-  const [error, setError] = useState([]);
+  const [error, setError] = useState("");
+  const [getErr, setGetErr] = useState(false);
   const [stopType, setStopType] = useState(false);
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
@@ -44,9 +45,9 @@ const TextGenerate = () => {
       ]);
       setPrompt("");
       setStopType(false);
+      setError("");
     } catch (err) {
       console.log(err);
-      // if(err === )
       // setError(err);
     }
     setLoading(false);
@@ -55,14 +56,20 @@ const TextGenerate = () => {
 
   const handleKeyEvent = async (e) => {
     if (e.key === "Enter") {
+      e.preventDefault();
+      if (e.shiftKey) {
+        e.preventDefault();
+        setPrompt((prevState) => `${prevState} \n`);
+        return;
+      }
       setLoading(true);
 
       try {
         const response = await openai.createCompletion({
           model: "text-davinci-003",
           prompt: prompt,
-          temperature: 0.5,
-          max_tokens: 100,
+          temperature: 1,
+          max_tokens: 150,
         });
 
         setPrompt("");
@@ -78,13 +85,24 @@ const TextGenerate = () => {
         inputRef.current.style.height = "3.6rem";
         setPrompt("");
         setStopType(false);
+        setError("");
       } catch (err) {
-        console.log(err.data);
-        if (err.data === "undefined") {
-          setError("too many ");
+        console.log(err.message, "err");
+
+        if (err.message === "Request failed with status code 429") {
+          setGetErr(true);
+          setError("too many request");
           setPrompt("");
           setStopType(false);
           setIsTyping(false);
+          setGetErr(false);
+        } else {
+          setGetErr(true);
+          setError(err.message);
+          setPrompt("");
+          setStopType(false);
+          setIsTyping(false);
+          setGetErr(false);
         }
       }
       setLoading(false);
@@ -118,9 +136,10 @@ const TextGenerate = () => {
         <div className="messageContent">
           {messageResult.map(({ id, message, result }, i) => (
             <div key={id}>
-              {result ? (
+              {result && (
                 <>
-                  <div className="searchMsg">{message}</div>
+                  <div className="searchMsg">my {message}</div>
+
                   <Typewriter
                     className={"typewriter"}
                     ref={typewriterRef}
@@ -163,17 +182,23 @@ const TextGenerate = () => {
                     </>
                   )}
                 </>
-              ) : (
-                <>
-                  {error ? (
-                    <div style={{ color: "red" }}>error</div>
-                  ) : (
-                    <div className="searchMsg">{message}</div>
-                  )}
-                </>
               )}
+              {/* // : (
+              //   <div className="searchMsg">{message}</div>
+              // )} */}
             </div>
           ))}
+          {error && (
+            <div
+              style={{
+                color: "red",
+                float: "center",
+                justifyContent: "end",
+              }}
+            >
+              {error}
+            </div>
+          )}
         </div>
         <textarea
           typeof="text"
