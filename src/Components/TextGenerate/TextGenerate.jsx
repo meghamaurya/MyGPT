@@ -47,8 +47,22 @@ const TextGenerate = () => {
       setStopType(false);
       setError("");
     } catch (err) {
-      console.log(err);
-      // setError(err);
+      // console.log(err);
+      if (err.message === "Request failed with status code 429") {
+        setGetErr(true);
+        setError("too many request");
+        setPrompt("");
+        setStopType(false);
+        setIsTyping(false);
+        setGetErr(false);
+      } else {
+        setGetErr(true);
+        setError(err.message);
+        setPrompt("");
+        setStopType(false);
+        setIsTyping(false);
+        setGetErr(false);
+      }
     }
     setLoading(false);
     setIsTyping(false);
@@ -87,7 +101,7 @@ const TextGenerate = () => {
         setStopType(false);
         setError("");
       } catch (err) {
-        console.log(err.message, "err");
+        // console.log(err.message, "err");
 
         if (err.message === "Request failed with status code 429") {
           setGetErr(true);
