@@ -11,7 +11,7 @@ const ImageGenerate = () => {
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState([]);
+  const [imageUrl, setImageUrl] = useState([{ id: "", image: "", reuslt: "" }]);
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [error, setError] = useState("");
@@ -27,9 +27,10 @@ const ImageGenerate = () => {
       });
       setSearch("");
       setImageUrl((prevState) => [
-        ...prevState,
+        // ...prevState,
         {
-          id: imageUrl.length + 1,
+          // id: imageUrl.length + 1,
+          id: imageUrl.id + 1,
           image: search,
           result: response.data.data[0].url,
         },
@@ -156,6 +157,7 @@ const ImageGenerate = () => {
         <textarea
           type="text"
           value={search}
+          ref={inputRef}
           onChange={(e) => {
             setSearch(e.target.value);
             handleInputChange(e);
@@ -163,14 +165,16 @@ const ImageGenerate = () => {
           }}
           onKeyDown={handleKeyEvent}
           placeholder={
-            isTyping ? `what type of image you want${dots}` : `${dots}`
+            loading || isTyping
+              ? `what type of image you want${dots}`
+              : `${dots}`
           }
           className="input"
         />
         <button
           onClick={handleClick}
-          className={loading ? "btnEffect" : "btn"}
           disabled={loading || search.length === 0}
+          className={loading ? "btnEffect" : "btn"}
         >
           {loading ? "Generating" : "Generate"}
         </button>
