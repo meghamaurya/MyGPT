@@ -8,12 +8,19 @@
     .imgContainer{
         @include Styles.generator-container;
         
+        .imgContent{
+            @include Styles.messageContent;
+        }
+        
         .input{
            @include Styles.input;
         }
 
         .btn{
            @include Styles.btn;
+        }
+        .btnEffect{
+            @include Styles.btnEffect;
         }
     }
 }
