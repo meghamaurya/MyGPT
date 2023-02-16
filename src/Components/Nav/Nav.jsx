@@ -13,7 +13,7 @@ const Nav = () => {
         <Link to="/" className="link">
           Text Generate
         </Link>
-        <Link to="imageGenerate" className="link">
+        <Link to="/imageGenerate" className="link">
           Image Generate
         </Link>
       </div>
