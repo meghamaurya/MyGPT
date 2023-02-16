@@ -11,7 +11,7 @@ const ImageGenerate = () => {
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState([{ id: "", image: "", reuslt: "" }]);
+  const [imageUrl, setImageUrl] = useState([{ id: "", image: "", result: "" }]);
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [error, setError] = useState("");
@@ -27,10 +27,11 @@ const ImageGenerate = () => {
       });
       setSearch("");
       setImageUrl((prevState) => [
-        // ...prevState,
+        ...prevState,
         {
+          id: prevState.length + 1,
           // id: imageUrl.length + 1,
-          id: imageUrl.id + 1,
+          // id: imageUrl.id + 1,
           image: search,
           result: response.data.data[0].url,
         },
@@ -130,12 +131,22 @@ const ImageGenerate = () => {
                   <>
                     {/* <div className="imgCard"> */}
                     <p className="imgTitle">{image}</p>
-                    {loading ? (
-                      <div className="dot-spin"></div>
-                    ) : (
-                      <img src={result} alt="" width="200px" className="img" />
+                    <img src={result} alt="" width="200px" className="img" />
+                    {imageUrl.length - 1 === i && (
+                      <>
+                        {/* <p className="imgTitle">{image}</p> */}
+                        {loading && (
+                          <div className="dot-spin"></div>
+                          // ) : (
+                          //   <img
+                          //     src={result}
+                          //     alt=""
+                          //     width="200px"
+                          //     className="img"
+                          //   />
+                        )}
+                      </>
                     )}
-                    {/* {imageUrl.length-1 === i && ()} */}
                     {/* </div> */}
                   </>
                 )}
