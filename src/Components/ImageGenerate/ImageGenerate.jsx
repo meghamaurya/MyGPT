@@ -15,7 +15,9 @@ const ImageGenerate = () => {
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [error, setError] = useState("");
+  const [copy, setCopy] = useState(false);
   const inputRef = useRef();
+  const imgContainerRef = useRef();
 
   const handleClick = async () => {
     setLoading(true);
@@ -30,14 +32,15 @@ const ImageGenerate = () => {
         ...prevState,
         {
           id: prevState.length + 1,
-          // id: imageUrl.length + 1,
-          // id: imageUrl.id + 1,
           image: search,
           result: response.data.data[0].url,
         },
       ]);
       setSearch("");
       setError("");
+
+      // const imageContainer = imgContainerRef.current;
+      // imageContainer.scrollTop = imageContainer.scrollHeight;
     } catch (err) {
       // console.log(err);
       if (err.message === "Request failed with status code 429") {
@@ -100,6 +103,12 @@ const ImageGenerate = () => {
     }
   };
 
+  const handleImageLoad = () => {
+    setLoading(true);
+    imgContainerRef.current.scrollTop = imgContainerRef.current.scrollHeight;
+    setLoading(false);
+  };
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setDots(dots.length >= 4 ? "" : `${dots}.`);
@@ -123,31 +132,33 @@ const ImageGenerate = () => {
     <main className="imgGenerator">
       <Nav />
       <div className="imgContainer">
-        <div className="imgContent">
+        <div className="imgContent" ref={imgContainerRef}>
           {imageUrl &&
             imageUrl.map(({ id, image, result }, i) => (
               <div key={id}>
                 {result && (
                   <>
-                    {/* <div className="imgCard"> */}
-                    <p className="imgTitle">{image}</p>
-                    <img src={result} alt="" width="200px" className="img" />
-                    {imageUrl.length - 1 === i && (
-                      <>
-                        {/* <p className="imgTitle">{image}</p> */}
-                        {loading && (
+                    <div className="imgCard">
+                      <div className="textContent">
+                        <p className="imgTitle">{image}</p>
+                        <button>
+                          <span></span>
+                          Copy Image
+                        </button>
+                      </div>
+                      <div>
+                        <img
+                          src={result}
+                          alt=""
+                          width="250px"
+                          className="img"
+                          onLoad={handleImageLoad}
+                        />
+                        {imageUrl.length - 1 === i && loading && (
                           <div className="dot-spin"></div>
-                          // ) : (
-                          //   <img
-                          //     src={result}
-                          //     alt=""
-                          //     width="200px"
-                          //     className="img"
-                          //   />
                         )}
-                      </>
-                    )}
-                    {/* </div> */}
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
@@ -157,6 +168,8 @@ const ImageGenerate = () => {
               style={{
                 color: "red",
                 float: "center",
+                position: "absolute",
+                bottom: "11rem",
                 justifyContent: "end",
               }}
             >
@@ -176,9 +189,11 @@ const ImageGenerate = () => {
           }}
           onKeyDown={handleKeyEvent}
           placeholder={
-            loading || isTyping
+            imageUrl.length === 0
               ? `what type of image you want${dots}`
-              : `${dots}`
+              : loading
+              ? `${dots}`
+              : `what type of image you want${dots}`
           }
           className="input"
         />

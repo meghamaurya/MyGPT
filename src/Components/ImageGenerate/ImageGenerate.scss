@@ -7,9 +7,26 @@
    
     .imgContainer{
         @include Styles.generator-container;
+        overflow: auto;
         
         .imgContent{
             @include Styles.messageContent;
+            justify-content: center;
+            align-items: center;
+            overflow-y: scroll;
+
+            .imgCard{
+                display: flex;
+                flex-direction: column;
+
+                .textContent{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+
+
         }
         
         .input{
