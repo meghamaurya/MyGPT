@@ -32,13 +32,13 @@
         
         .input{
          @include Styles.input;
-         resize: none;
-         overflow-y: auto;
-         height: 57.6px;
-         max-height: 125px;
-         &::-webkit-scrollbar{
-            display: none;
-         }
+        //  resize: none;
+        //  overflow-y: auto;
+        //  height: 57.6px;
+        //  max-height: 125px;
+        //  &::-webkit-scrollbar{
+        //     display: none;
+        //  }
         }
 
         .btn{
