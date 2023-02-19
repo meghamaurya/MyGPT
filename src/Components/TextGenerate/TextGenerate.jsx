@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Configuration, OpenAIApi } from "openai";
+import { BsChatDotsFill } from "react-icons/bs";
 import Typewriter from "typewriter-effect";
 import "./TextGenerate.scss";
 import Nav from "../Nav/Nav";
@@ -17,7 +18,6 @@ const TextGenerate = () => {
   ]);
 
   const [error, setError] = useState("");
-  const [getErr, setGetErr] = useState(false);
   const [stopType, setStopType] = useState(false);
   const [dots, setDots] = useState("");
   const [isTyping, setIsTyping] = useState(true);
@@ -31,8 +31,8 @@ const TextGenerate = () => {
       const response = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: prompt,
-        temperature: 0.5,
-        max_tokens: 100,
+        temperature: 0.4,
+        max_tokens: 150,
       });
       setPrompt("");
       setMessageResult((prevState) => [
@@ -45,23 +45,20 @@ const TextGenerate = () => {
       ]);
       setPrompt("");
       setStopType(false);
+      setIsTyping(false);
       setError("");
     } catch (err) {
       // console.log(err);
       if (err.message === "Request failed with status code 429") {
-        setGetErr(true);
         setError("too many request");
         setPrompt("");
         setStopType(false);
         setIsTyping(false);
-        setGetErr(false);
       } else {
-        setGetErr(true);
         setError(err.message);
         setPrompt("");
         setStopType(false);
         setIsTyping(false);
-        setGetErr(false);
       }
     }
     setLoading(false);
@@ -82,7 +79,7 @@ const TextGenerate = () => {
         const response = await openai.createCompletion({
           model: "text-davinci-003",
           prompt: prompt,
-          temperature: 1,
+          temperature: 1.5,
           max_tokens: 150,
         });
 
@@ -99,24 +96,21 @@ const TextGenerate = () => {
         inputRef.current.style.height = "3.6rem";
         setPrompt("");
         setStopType(false);
+        setIsTyping(false);
         setError("");
       } catch (err) {
         // console.log(err.message, "err");
 
         if (err.message === "Request failed with status code 429") {
-          setGetErr(true);
           setError("too many request");
           setPrompt("");
           setStopType(false);
           setIsTyping(false);
-          setGetErr(false);
         } else {
-          setGetErr(true);
           setError(err.message);
           setPrompt("");
           setStopType(false);
           setIsTyping(false);
-          setGetErr(false);
         }
       }
       setLoading(false);
@@ -152,49 +146,58 @@ const TextGenerate = () => {
             <div key={id}>
               {result && (
                 <>
-                  <div className="searchMsg">my {message}</div>
+                  <p className="searchMsg">
+                    <BsChatDotsFill className="msgIcon" /> {message}
+                  </p>
+                  <div className="typingContainer">
+                    <div className="iconContainer">
+                      <BsChatDotsFill className="resultIcon" />
+                    </div>
+                    <div className="textContainer">
+                      <Typewriter
+                        className={"typewriter"}
+                        ref={typewriterRef}
+                        onInit={(typewriter) => {
+                          if (!stopType) {
+                            typewriterRef.current = typewriter;
 
-                  <Typewriter
-                    className={"typewriter"}
-                    ref={typewriterRef}
-                    onInit={(typewriter) => {
-                      if (!stopType) {
-                        typewriterRef.current = typewriter;
-                        typewriter.typeString(result).start();
-                      }
-                    }}
-                  />
-                  {messageResult.length - 1 === i && (
-                    <>
-                      {!stopType ? (
-                        <button
-                          className="controlBtn"
-                          onClick={() => {
-                            if (typewriterRef.current) {
-                              typewriterRef.current.stop();
-                              setStopType(true);
-                              setIsTyping(true);
-                            }
-                          }}
-                        >
-                          stop
-                        </button>
-                      ) : (
-                        <button
-                          className="controlBtn"
-                          onClick={() => {
-                            if (typewriterRef.current) {
-                              typewriterRef.current.start();
-                              setStopType(false);
-                              setIsTyping(false);
-                            }
-                          }}
-                        >
-                          continue
-                        </button>
+                            typewriter.typeString(result).start();
+                          }
+                        }}
+                      />
+                      {messageResult.length - 1 === i && (
+                        <>
+                          {!stopType ? (
+                            <button
+                              className="controlBtn"
+                              onClick={() => {
+                                if (typewriterRef.current) {
+                                  typewriterRef.current.stop();
+                                  setStopType(true);
+                                  setIsTyping(true);
+                                }
+                              }}
+                            >
+                              stop
+                            </button>
+                          ) : (
+                            <button
+                              className="controlBtn"
+                              onClick={() => {
+                                if (typewriterRef.current) {
+                                  typewriterRef.current.start();
+                                  setStopType(false);
+                                  setIsTyping(false);
+                                }
+                              }}
+                            >
+                              continue
+                            </button>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
+                    </div>
+                  </div>
                 </>
               )}
               {/* // : (
@@ -207,6 +210,8 @@ const TextGenerate = () => {
               style={{
                 color: "red",
                 float: "center",
+                position: "absolute",
+                bottom: "11rem",
                 justifyContent: "end",
               }}
             >
