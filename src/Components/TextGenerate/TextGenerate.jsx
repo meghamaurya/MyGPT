@@ -130,9 +130,9 @@ const TextGenerate = () => {
   const handleInputChange = (e) => {
     let height = e.target.scrollHeight;
     if (e.target.value === "" && isTyping) {
-      inputRef.current.style.height = "57.6px";
+      inputRef.current.style.height = "50px";
     } else {
-      height = height <= 57.6 ? 57.6 : height;
+      height = height <= 50 ? 50 : height;
       inputRef.current.style.height = `${height}px`;
     }
   };
@@ -160,7 +160,6 @@ const TextGenerate = () => {
                         onInit={(typewriter) => {
                           if (!stopType) {
                             typewriterRef.current = typewriter;
-
                             typewriter.typeString(result).start();
                           }
                         }}
@@ -219,30 +218,32 @@ const TextGenerate = () => {
             </div>
           )}
         </div>
-        <textarea
-          typeof="text"
-          value={prompt}
-          ref={inputRef}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-            handleInputChange(e);
-            if (typewriterRef.current) {
-              typewriterRef.current.stop();
-            }
-            setStopType(false);
-          }}
-          onKeyDown={handleKeyEvent}
-          placeholder={isTyping ? `How can I help you${dots}` : `${dots}`}
-          className="input"
-        />
+        <div style={{ paddingBottom: "4rem", width: "100%" }}>
+          <textarea
+            typeof="text"
+            value={prompt}
+            ref={inputRef}
+            onChange={(e) => {
+              setPrompt(e.target.value);
+              handleInputChange(e);
+              if (typewriterRef.current) {
+                typewriterRef.current.stop();
+              }
+              setStopType(false);
+            }}
+            onKeyDown={handleKeyEvent}
+            placeholder={isTyping ? `How can I help you${dots}` : `${dots}`}
+            className="input"
+          />
 
-        <button
-          onClick={handleClick}
-          disabled={loading || prompt.length === 0}
-          className={loading ? "btnEffect" : "btn"}
-        >
-          {loading ? "Generating" : "Generate"}
-        </button>
+          <button
+            onClick={handleClick}
+            disabled={loading || prompt.length === 0}
+            className={loading ? "btnEffect" : "btn"}
+          >
+            {loading ? "Generating" : "Generate"}
+          </button>
+        </div>
       </div>
     </main>
   );

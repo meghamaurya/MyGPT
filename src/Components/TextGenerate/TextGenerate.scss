@@ -7,39 +7,35 @@
    
     .textContainer{
         @include Styles.generator-container;
-
+        margin: auto auto 1rem auto;
+        // padding-bottom: 0;
         .messageContent{
             @include Styles.messageContent;
-            
+
             .searchMsg{
                 margin-bottom: 0.5rem;
             }
-
             .typingContainer{
                 display: flex;
                 align-items: flex-start;
                 justify-content: flex-start;
                 text-align: start;
+                padding: 0;
                 .iconContainer{
                     display: flex;
-                    // align-items: center;
-                    position: fixed;
-                    // margin-right: 1.2rem;
                 }
                 .resultIcon{
                     font-size: 1.3rem;
-                    // margin-top: 0;
-                    // margin-right: 1.2rem;
-                    color: white;
+                    color: #fdfcfc;
                 }
 
                 .textContainer {
                     display: flex;
                     align-items: flex-start;
-                justify-content: flex-start;
-                text-align: start;
-                margin-left: 2.5rem;
-                width: 100%;
+                    justify-content: flex-start;
+                    text-align: start;
+                    margin-left: 1.2rem;
+                    width: 100%;
                   }
             }
             .msgIcon{
@@ -49,9 +45,6 @@
 
         }
 
-        // .searchMsg{
-
-        // }
 
         .controlBtn{
             @include Styles.controlBtn;
@@ -69,13 +62,7 @@
         
         .input{
          @include Styles.input;
-        //  resize: none;
-        //  overflow-y: auto;
-        //  height: 57.6px;
-        //  max-height: 125px;
-        //  &::-webkit-scrollbar{
-        //     display: none;
-        //  }
+         height: 50px;
         }
 
         .btn{
