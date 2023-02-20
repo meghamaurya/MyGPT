@@ -3,10 +3,11 @@
   font-family: 'Noto Sans Lao', sans-serif;
 }
 
-$primary-color: rgb(240, 240, 240);
+// $primary-color: rgb(240, 240, 240);
+$primary-color: linear-gradient(to top, #ffffff 0%, #838383 174%);
 
 body{
-  background-color: $primary-color;
+  background: $primary-color;
 }
 
 .App {

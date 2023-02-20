@@ -199,9 +199,6 @@ const TextGenerate = () => {
                   </div>
                 </>
               )}
-              {/* // : (
-              //   <div className="searchMsg">{message}</div>
-              // )} */}
             </div>
           ))}
           {error && (
