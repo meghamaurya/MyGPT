@@ -2,6 +2,8 @@ import { Configuration, OpenAIApi } from "openai";
 import { useEffect, useRef, useState } from "react";
 import Nav from "../Nav/Nav";
 import "./ImageGenerate.scss";
+import { MdContentCopy } from "react-icons/md";
+import { IoCheckmarkDone } from "react-icons/io5";
 
 const ImageGenerate = () => {
   const configuration = new Configuration({
@@ -128,6 +130,14 @@ const ImageGenerate = () => {
     }
   };
 
+  const copyImage = (index) => {
+    navigator.clipboard.writeText(imageUrl[index].result);
+    setCopy(true);
+    setTimeout(() => {
+      setCopy(false);
+    }, 5000);
+  };
+
   return (
     <main className="imgGenerator">
       <Nav />
@@ -141,10 +151,20 @@ const ImageGenerate = () => {
                     <div className="imgCard">
                       <div className="textContent">
                         <p className="imgTitle">{image}</p>
-                        <button>
-                          <span></span>
-                          Copy Image
-                        </button>
+                        {copy ? (
+                          <button className={copy ? "copied" : "copyBtn"}>
+                            <IoCheckmarkDone style={{ paddingRight: "4px" }} />
+                            Copied
+                          </button>
+                        ) : (
+                          <button
+                            className={copy ? "copied" : "copyBtn"}
+                            onClick={() => copyImage(i)}
+                          >
+                            <MdContentCopy style={{ paddingRight: "4px" }} />
+                            Copy
+                          </button>
+                        )}
                       </div>
                       <div>
                         <img

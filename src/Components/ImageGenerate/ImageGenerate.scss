@@ -8,10 +8,10 @@
     .imgContainer{
         @include Styles.generator-container;
         overflow: auto;
-        
+        margin: auto auto 4rem auto;
+        padding-bottom: 4rem;
         .imgContent{
             @include Styles.messageContent;
-            justify-content: center;
             align-items: center;
             overflow-y: scroll;
 
@@ -24,17 +24,33 @@
                     justify-content: space-between;
                     align-items: center;
                 }
+
+                .copyBtn{
+                    background-color: rgb(126, 124, 124);
+                    color: white;
+                    border-radius: 10px;
+                    border: 2px solid #4e4e4e;
+                    cursor: pointer;
+                }
+
+                .copied{
+                    background: black;
+                    color: white;
+                    cursor: pointer;
+                    border-radius: 10px;
+                }
+
             }
-
-
         }
         
         .input{
            @include Styles.input;
+           height: 57.6px;
         }
 
         .btn{
            @include Styles.btn;
+           margin-top: 0.5rem;
         }
         .btnEffect{
             @include Styles.btnEffect;
